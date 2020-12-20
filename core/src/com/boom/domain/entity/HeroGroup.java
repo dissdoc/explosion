@@ -9,7 +9,7 @@ import com.boom.items.models.Hero;
 
 public class HeroGroup extends Group {
 
-    private HeroMediator mediator;
+    private final HeroMediator mediator;
 //    private HealthActor healthActor;
 
     public HeroGroup() {
@@ -29,24 +29,7 @@ public class HeroGroup extends Group {
     public void act(float delta) {
         super.act(delta);
 
-        int xSpeed = 0;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            mediator.jump();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            hero.state = State.IDLE;
-//            if (heroActor.isClimb)
-//            xSpeed = -1;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            hero.state = State.IDLE;
-//            if(heroActor.isClimb)
-//            xSpeed = 1;
-        }
-//
-//        heroActor.fall(IMPULSE);
-//        heroActor.run(xSpeed);
     }
 
     public Vector2 getPosition() {

@@ -1,7 +1,5 @@
 package com.boom.utils;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -10,9 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.boom.domain.GameManager;
 import com.boom.domain.entity.BodyData;
 import com.boom.domain.GameWorld;
 
@@ -59,50 +55,6 @@ public class BaseBody {
             Fixture fixture = body.createFixture(shape, 1);
             fixture.setUserData(userData);
             body.setTransform(toUnits(rect.x) + width / 2, toUnits(rect.y) + height / 2, 0);
-            shape.dispose();
-        }
-    }
-
-    public static Sprite createSprite(String spriteName) {
-        Sprite sprite = new Sprite(GameManager.getInstance().getManager().get(spriteName, Texture.class));
-        sprite.setSize(toUnits(sprite.getWidth()), toUnits(sprite.getHeight()));
-
-        return sprite;
-    }
-
-    public void createItemsByName(TiledMap map, Sprite sprite, String name, String data, short bits) {
-        MapObjects objects = map.getLayers().get(name).getObjects();
-        createBodyItem(objects, sprite, type, data, bits);
-    }
-
-    private void createBodyItem(MapObjects objects, Sprite sprite, BodyDef.BodyType type,
-                                String data, short bits) {
-        for (MapObject object: objects) {
-            RectangleMapObject rectMapObject = (RectangleMapObject) object;
-            Rectangle rect = rectMapObject.getRectangle();
-
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = type;
-            bodyDef.fixedRotation = false;
-
-            Body body = GameWorld.getInstance().getWorld().createBody(bodyDef);
-            body.setUserData(data);
-
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
-
-            FixtureDef fixtureDef = new FixtureDef();
-            fixtureDef.shape = shape;
-            fixtureDef.density = .75f;
-            fixtureDef.filter.categoryBits = bits;
-//            fixtureDef.filter.maskBits = ~Config.Entity.HERO_MASK;
-            fixtureDef.filter.groupIndex = 0;
-
-            Fixture fixture = body.createFixture(fixtureDef);
-            fixture.setUserData("AID");
-            body.setTransform(toUnits(rect.x) + sprite.getWidth() / 2,
-                    toUnits(rect.y) + sprite.getHeight() / 2, 0);
-
             shape.dispose();
         }
     }

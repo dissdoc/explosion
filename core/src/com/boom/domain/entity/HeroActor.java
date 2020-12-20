@@ -30,9 +30,6 @@ public class HeroActor extends Actor
     public Sprite sprite;
     public Body body;
 
-    public boolean isJump = false;
-    public boolean isClimb = true;
-
     public HeroActor(Hero hero) {
         sprite = createSprite(Entity.HERO_TEXTURE);
         body = createBody(sprite, hero.name);
@@ -87,7 +84,6 @@ public class HeroActor extends Actor
         return sprite;
     }
 
-    @Override
     public Body createBody(Sprite sprite, String name) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;

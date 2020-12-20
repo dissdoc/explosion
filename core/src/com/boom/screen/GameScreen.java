@@ -1,6 +1,7 @@
 package com.boom.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -43,9 +44,6 @@ public class GameScreen extends ScreenAdapter {
     private HeroGroup hero;
     private Stage stage;
 
-    private Sprite aid;
-    private boolean isDown = false;
-
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
@@ -78,8 +76,7 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(hero);
 
         Map.buildStaticFloor(map);
-        aid = Map.buildStaticAids(map);
-        aid.setPosition(7f, 4f);
+        Map.buildStaticAids(map, stage);
     }
 
     @Override
@@ -87,12 +84,16 @@ public class GameScreen extends ScreenAdapter {
         update(delta);
         clearScreen();
 
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+            System.out.println("LEFT" + Gdx.input.getX() + " " + Gdx.input.getY());
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT))
+            System.out.println("RIGHT");
         draw(delta);
 
         stage.act(delta);
         stage.draw();
 
-        //
+        // Debug render as lines
         debugRender.render(GameWorld.getInstance().getWorld(), camera.combined);
     }
 
@@ -110,8 +111,6 @@ public class GameScreen extends ScreenAdapter {
 
         batch.begin();
 
-
-        aid.draw(batch);
         batch.end();
         batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
@@ -123,18 +122,18 @@ public class GameScreen extends ScreenAdapter {
         hud.update(delta);
 
         // ---------
-        if (!isDown) {
-            aid.setY(aid.getY() + 0.008f);
-        }
-        if (isDown) {
-            aid.setY(aid.getY() - 0.008f);
-        }
-
-        if (aid.getY() >= 4.2f) {
-            isDown = true;
-        } else if (aid.getY() < 4.0f) {
-            isDown = false;
-        }
+//        if (!isDown) {
+//            aid.setY(aid.getY() + 0.008f);
+//        }
+//        if (isDown) {
+//            aid.setY(aid.getY() - 0.008f);
+//        }
+//
+//        if (aid.getY() >= 4.2f) {
+//            isDown = true;
+//        } else if (aid.getY() < 4.0f) {
+//            isDown = false;
+//        }
         // =========
 
         hero.checkOut(MAP_WIDTH, MAP_HEIGHT);

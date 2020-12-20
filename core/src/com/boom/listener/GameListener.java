@@ -37,16 +37,16 @@ public class GameListener implements ContactListener {
 //                    actor.isFall = true;
 //                }
 
-                if (PositionCollide.BOTTOM.equals(collide)) {
-                    actor.isJump = false;
-                    actor.isClimb = true;
-                } else if (PositionCollide.TOP.equals(collide)) {
-
-                } else if (PositionCollide.LEFT.equals(collide)) {
-                    if (actor.isJump) actor.isClimb = false;
-                } else if (PositionCollide.RIGHT.equals(collide)) {
-                    if (actor.isJump) actor.isClimb = false;
-                }
+//                if (PositionCollide.BOTTOM.equals(collide)) {
+//                    actor.isJump = false;
+//                    actor.isClimb = true;
+//                } else if (PositionCollide.TOP.equals(collide)) {
+//
+//                } else if (PositionCollide.LEFT.equals(collide)) {
+//                    if (actor.isJump) actor.isClimb = false;
+//                } else if (PositionCollide.RIGHT.equals(collide)) {
+//                    if (actor.isJump) actor.isClimb = false;
+//                }
             }
         }
     }
