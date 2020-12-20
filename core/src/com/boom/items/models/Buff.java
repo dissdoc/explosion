@@ -1,8 +1,8 @@
-package com.boom.items;
+package com.boom.items.models;
 
 public enum Buff {
 
-    Aidkit("First aid kit", 10);
+    AIDKIT("First aid kit", 10);
 
     public final String name;
     public final int points;

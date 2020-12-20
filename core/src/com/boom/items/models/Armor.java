@@ -1,10 +1,10 @@
-package com.boom.items;
+package com.boom.items.models;
 
 public enum Armor {
 
-    None(null, 0),
-    Pistol("Gun#1", 5),
-    Rifle("Gun#2",2);
+    NONE(null, 0),
+    PISTOL("Gun#1", 5),
+    RIFLE("Gun#2",2);
 
     public final String name;
     private final int bullets;

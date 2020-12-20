@@ -1,6 +1,5 @@
 package com.boom.domain.entity;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,13 +12,14 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.boom.domain.GameManager;
 import com.boom.domain.GameWorld;
-import com.boom.items.Hero;
+import com.boom.items.models.Hero;
 import com.boom.listener.ActionHandler;
 
 import static com.boom.Config.*;
 import static com.boom.utils.Converter.toUnits;
 
-public class HeroActor extends Actor implements ActionHandler {
+public class HeroActor extends Actor
+        implements ActorComponent, ActionHandler {
 
     public static final short HERO_COLLISION =
             ~Item.AID_MASK;
@@ -34,30 +34,8 @@ public class HeroActor extends Actor implements ActionHandler {
     public boolean isClimb = true;
 
     public HeroActor(Hero hero) {
-        sprite = new Sprite(GameManager.getInstance().getManager().get(
-                Entity.HERO_TEXTURE, Texture.class));
-        sprite.setSize(toUnits(sprite.getWidth()), toUnits(sprite.getHeight()));
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(POS_X, POS_Y);
-        bodyDef.fixedRotation = true;
-
-        body = GameWorld.getInstance().getWorld().createBody(bodyDef);
-        body.setUserData(new BodyData(hero.name, sprite.getWidth(), sprite.getHeight(), this));
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = .75f;
-        fixtureDef.friction = .75f;
-
-        Fixture fixture = body.createFixture(fixtureDef);
-        fixture.setUserData(hero.name);
-
-        shape.dispose();
+        sprite = createSprite(Entity.HERO_TEXTURE);
+        body = createBody(sprite, hero.name);
     }
 
     @Override
@@ -98,11 +76,40 @@ public class HeroActor extends Actor implements ActionHandler {
         return new Vector2(sprite.getX(), sprite.getY());
     }
 
-    private void createSprite() {
+    // Create component for the Hero ---------------------------------------------------------------
 
+    @Override
+    public Sprite createSprite(String texture) {
+        Sprite sprite = new Sprite(GameManager.getInstance().getManager().get(
+                texture, Texture.class));
+        sprite.setSize(toUnits(sprite.getWidth()), toUnits(sprite.getHeight()));
+
+        return sprite;
     }
 
-    private void createBox() {
+    @Override
+    public Body createBody(Sprite sprite, String name) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(POS_X, POS_Y);
+        bodyDef.fixedRotation = true;
 
+        Body body = GameWorld.getInstance().getWorld().createBody(bodyDef);
+        body.setUserData(new BodyData(name, sprite.getWidth(), sprite.getHeight(), this));
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = .75f;
+        fixtureDef.friction = .75f;
+
+        Fixture fixture = body.createFixture(fixtureDef);
+        fixture.setUserData(name);
+
+        shape.dispose();
+
+        return body;
     }
 }
