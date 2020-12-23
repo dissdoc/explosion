@@ -94,7 +94,7 @@ public class GameScreen extends ScreenAdapter {
         stage.draw();
 
         // Debug render as lines
-        debugRender.render(GameWorld.getInstance().getWorld(), camera.combined);
+//        debugRender.render(GameWorld.getInstance().getWorld(), camera.combined);
     }
 
     @Override

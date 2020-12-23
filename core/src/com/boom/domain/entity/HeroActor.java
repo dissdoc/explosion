@@ -24,7 +24,7 @@ public class HeroActor extends Actor
     public static final short HERO_COLLISION =
             ~Item.AID_MASK;
 
-    private static final float POS_X = 2f;
+    private static final float POS_X = 0.5f;
     private static final float POS_Y = 2.5f;
 
     public Sprite sprite;

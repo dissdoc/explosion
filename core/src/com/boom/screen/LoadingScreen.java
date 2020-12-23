@@ -1,6 +1,7 @@
 package com.boom.screen;
 
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.boom.BoomGame;
@@ -23,10 +24,17 @@ public class LoadingScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        GameManager.getInstance().getManager().load(MAP_FILE, TiledMap.class);
+        AssetManager manager = GameManager.getInstance().getManager();
 
-        GameManager.getInstance().getManager().load(Entity.HERO_TEXTURE, Texture.class);
-        GameManager.getInstance().getManager().load(Item.AID_TEXTURE, Texture.class);
+        manager.load(MAP_FILE, TiledMap.class);
+
+        manager.load(Entity.HERO_TEXTURE, Texture.class);
+        manager.load(Item.AID_TEXTURE, Texture.class);
+
+        // Loading system textures
+        manager.load(SystemHud.BOOT, Texture.class);
+        manager.load(SystemHud.HEALTH, Texture.class);
+        manager.load(SystemHud.HEALTH_STATUS, Texture.class);
     }
 
     private void update() {

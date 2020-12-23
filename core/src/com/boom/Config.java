@@ -2,7 +2,7 @@ package com.boom;
 
 public class Config {
 
-    public static final String TITLE = "Boom!";
+    public static final String TITLE = "Explosion";
     public static final String VERSION = "0.1";
 
     public static final float WORLD_WIDTH = 1280f;
@@ -15,6 +15,13 @@ public class Config {
     // Map
     public static final String MAP_FILE = "map.tmx";
 
+    public static final class SystemHud {
+
+        public static final String BOOT = "boot.png";
+        public static final String HEALTH = "health.png";
+        public static final String HEALTH_STATUS = "health_status.png";
+    }
+
     public static final class Entity {
 
         public static final String HERO_TEXTURE = "hero.png";
@@ -23,6 +30,7 @@ public class Config {
     }
 
     public static final class Item {
+
         public static final String AID_TEXTURE = "aid.png";
         public static final String AID_NAME = "aid";
         public static final short AID_MASK = 0x0002;
