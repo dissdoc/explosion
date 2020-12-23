@@ -12,6 +12,11 @@ public class Config {
 
     public static final float PPM = 64f;
 
+    public static final int COMMAND_SHOOT_D = 0;
+    public static final int COMMAND_SHOOT_E = 1;
+    public static final int COMMAND_WALK_D = 2;
+    public static final int COMMAND_WALK_E = 3;
+
     // Map
     public static final String MAP_FILE = "map.tmx";
 
@@ -20,6 +25,8 @@ public class Config {
         public static final String BOOT = "boot.png";
         public static final String HEALTH = "health.png";
         public static final String HEALTH_STATUS = "health_status.png";
+        public static final String COMMANDS = "commands.png";
+        public static final String CURSOR =  "cursor.png";
     }
 
     public static final class Entity {

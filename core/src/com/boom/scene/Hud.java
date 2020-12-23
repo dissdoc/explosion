@@ -7,10 +7,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -61,14 +65,24 @@ public class Hud implements Disposable {
         topMenu.add(scoreLabel2).expandX().right();
         topMenu.row();
 
-        Table table2 = new Table();
-        table2.bottom();
-        table2.setFillParent(true);
+        Table commands = new Table();
+        commands.center().bottom();
+        commands.setFillParent(true);
+        commands.setTouchable(Touchable.enabled);
+        commands.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println(actor.getX());
+            }
+        });
 
-        table2.add(worldTimer).expandX().padBottom(10);
+        TextureRegion[] regions = GameManager.getInstance().getRegions(SystemHud.COMMANDS);
+        commands.add(new Image(regions[COMMAND_SHOOT_E])).padRight(5);
+        commands.add(new Image(regions[COMMAND_WALK_D]));
+        commands.add(worldTimer).expandX().padBottom(10);
 
         stage.addActor(topMenu);
-        stage.addActor(table2);
+        stage.addActor(commands);
 
 //        topMenu.debug();
     }

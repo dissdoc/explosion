@@ -5,8 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -51,6 +54,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        renderCursor();
         GameWorld.getInstance().show();
         debugRender = new Box2DDebugRenderer();
 
@@ -151,5 +155,15 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Gdx.graphics.setTitle(String.format("%s v.%s", TITLE, VERSION));
+    }
+
+    private void renderCursor() {
+        Pixmap pix = new Pixmap(Gdx.files.internal(SystemHud.CURSOR));
+        int xHotspot = pix.getWidth()/2;
+        int yHotspot = pix.getHeight()/2;
+        Cursor cursor =  Gdx.graphics.newCursor(pix, xHotspot, yHotspot);
+        Gdx.graphics.setCursor(cursor);
+
+        pix.dispose();
     }
 }
