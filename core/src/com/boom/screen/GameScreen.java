@@ -3,14 +3,11 @@ package com.boom.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -22,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boom.domain.GameManager;
 import com.boom.domain.GameWorld;
 import com.boom.domain.entity.HeroGroup;
-import com.boom.scene.Hud;
+import com.boom.scene.HudStatus;
 import com.boom.utils.Map;
 
 import static com.boom.Config.*;
@@ -43,7 +40,7 @@ public class GameScreen extends ScreenAdapter {
 
     private Box2DDebugRenderer debugRender;
 
-    private Hud hud;
+    private HudStatus hudStatus;
     private HeroGroup hero;
     private Stage stage;
 
@@ -66,7 +63,7 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
 
         // Create menu game
-        hud = new Hud(batch);
+        hudStatus = new HudStatus(batch);
 
         map = GameManager.getInstance().getManager().get(MAP_FILE);
         TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(0);
@@ -105,7 +102,7 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         hero.dispose();
         GameWorld.getInstance().dispose();
-        hud.dispose();
+        hudStatus.dispose();
     }
 
     private void draw(float delta) {
@@ -116,14 +113,14 @@ public class GameScreen extends ScreenAdapter {
         batch.begin();
 
         batch.end();
-        batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+        batch.setProjectionMatrix(hudStatus.stage.getCamera().combined);
+        hudStatus.stage.draw();
     }
 
     private void update(float delta) {
         GameWorld.getInstance().update(delta);
 
-        hud.update(delta);
+        hudStatus.update(delta);
 
         // ---------
 //        if (!isDown) {
