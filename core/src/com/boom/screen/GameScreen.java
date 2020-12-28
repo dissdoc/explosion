@@ -12,15 +12,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boom.domain.GameManager;
 import com.boom.domain.GameWorld;
-import com.boom.domain.entity.HeroGroup;
 import com.boom.scene.HudStatus;
-import com.boom.utils.Map;
+import com.boom.service.PathBuilder;
+import com.boom.utils.MapBuilder;
 
 import static com.boom.Config.*;
 import static com.boom.utils.Converter.*;
@@ -35,13 +36,14 @@ public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
 
     // Map loading
+    private MapBuilder mapBuilder;
+    private PathBuilder pathBuilder;
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
 
     private Box2DDebugRenderer debugRender;
 
     private HudStatus hudStatus;
-    private HeroGroup hero;
     private Stage stage;
 
     @Override
@@ -62,6 +64,10 @@ public class GameScreen extends ScreenAdapter {
 
         batch = new SpriteBatch();
 
+        mapBuilder = new MapBuilder();
+        mapBuilder.init();
+        pathBuilder = new PathBuilder(mapBuilder, batch);
+
         // Create menu game
         hudStatus = new HudStatus(batch);
 
@@ -73,22 +79,16 @@ public class GameScreen extends ScreenAdapter {
         mapRenderer.setView(camera);
 
         stage = new Stage(viewport);
-        hero = new HeroGroup();
-        stage.addActor(hero);
 
-        Map.buildStaticFloor(map);
-        Map.buildStaticAids(map, stage);
+        mapBuilder.buildStaticFloor();
+        mapBuilder.buildStaticItems(stage);
+        mapBuilder.buildMobs(stage);
     }
 
     @Override
     public void render(float delta) {
         update(delta);
         clearScreen();
-
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-            System.out.println("LEFT" + Gdx.input.getX() + " " + Gdx.input.getY());
-        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT))
-            System.out.println("RIGHT");
         draw(delta);
 
         stage.act(delta);
@@ -100,7 +100,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        hero.dispose();
         GameWorld.getInstance().dispose();
         hudStatus.dispose();
     }
@@ -112,6 +111,10 @@ public class GameScreen extends ScreenAdapter {
 
         batch.begin();
 
+//        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            Vector3 vec = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+            pathBuilder.drawHeroPath(vec.x, vec.y);
+//        }
         batch.end();
         batch.setProjectionMatrix(hudStatus.stage.getCamera().combined);
         hudStatus.stage.draw();
@@ -137,12 +140,12 @@ public class GameScreen extends ScreenAdapter {
 //        }
         // =========
 
-        hero.checkOut(MAP_WIDTH, MAP_HEIGHT);
-        if (viewport.getWorldWidth() / 2 < hero.getPosition().x &&
-            MAP_WIDTH - viewport.getWorldWidth() / 2 > hero.getPosition().x) {
-            camera.position.x = hero.getPosition().x;
-            camera.update();
-        }
+//        hero.checkOut(MAP_WIDTH, MAP_HEIGHT);
+//        if (viewport.getWorldWidth() / 2 < hero.getPosition().x &&
+//            MAP_WIDTH - viewport.getWorldWidth() / 2 > hero.getPosition().x) {
+//            camera.position.x = hero.getPosition().x;
+//            camera.update();
+//        }
 
         mapRenderer.setView(camera);
     }

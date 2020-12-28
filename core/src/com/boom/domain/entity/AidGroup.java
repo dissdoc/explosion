@@ -54,6 +54,10 @@ class AidActor extends Actor implements ActorComponent {
         sprite.draw(batch);
     }
 
+    public Vector2 getPosition() {
+        return new Vector2(sprite.getX(), sprite.getY());
+    }
+
     @Override
     public Sprite createSprite(String texture) {
         Sprite sprite = new Sprite(GameManager.getInstance().getManager().get(

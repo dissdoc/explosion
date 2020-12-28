@@ -9,12 +9,12 @@ import com.boom.items.models.Hero;
 
 public class HeroGroup extends Group {
 
-    private final HeroMediator mediator;
+    public final HeroMediator mediator;
 //    private HealthActor healthActor;
 
-    public HeroGroup() {
+    public HeroGroup(Vector2 pos) {
         mediator = new HeroMediator();
-        mediator.hero = new Hero();
+        mediator.hero = new Hero(pos);
         mediator.heroActor = new HeroActor(mediator.hero);
 
         this.addActor(mediator.heroActor);
@@ -28,12 +28,6 @@ public class HeroGroup extends Group {
     @Override
     public void act(float delta) {
         super.act(delta);
-
-
-    }
-
-    public Vector2 getPosition() {
-        return mediator.heroActor.getPosition();
     }
 
     public void checkOut(float mapWidth, float mapHeight) {

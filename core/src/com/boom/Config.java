@@ -27,6 +27,7 @@ public class Config {
         public static final String HEALTH_STATUS = "health_status.png";
         public static final String COMMANDS = "commands.png";
         public static final String CURSOR =  "cursor.png";
+        public static final String PATH_SELECTED = "path_selected.png";
     }
 
     public static final class Entity {
@@ -45,9 +46,11 @@ public class Config {
 
     public static final class Obstacle {
 
+        public static final String PLATFORM_LAYER = "Platforms";
         public static final String FLOOR_NAME = "Floor";
         public static final String FLOOR_LAYER = "Physics_Platform_Static";
-        public static final String ITEMS_NAME = "Aid";
+        public static final String MOBS_LAYER = "Physics_Mobs";
         public static final String ITEMS_LAYER = "Physics_Items";
+        public static final String OBSTACLES_LAYER = "Physics_Obstacles";
     }
 }

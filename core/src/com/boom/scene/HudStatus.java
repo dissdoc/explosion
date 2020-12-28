@@ -128,11 +128,11 @@ class TableCommand extends Table {
 
     public void buildControls() {
         final CommandButton shootBtn = new CommandButton(regions[COMMAND_SHOOT_D], regions[COMMAND_SHOOT_E]);
-        shootBtn.toggleSelect();
         this.add(shootBtn).padRight(8).padBottom(PPM / 4);
         buttonGroup.add(shootBtn);
 
         final CommandButton walkBtn = new CommandButton(regions[COMMAND_WALK_D], regions[COMMAND_WALK_E]);
+        walkBtn.toggleSelect();
         this.add(walkBtn).padBottom(PPM / 4);
         buttonGroup.add(walkBtn);
     }

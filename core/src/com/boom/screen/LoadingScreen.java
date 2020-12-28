@@ -36,6 +36,7 @@ public class LoadingScreen extends ScreenAdapter {
         manager.load(SystemHud.HEALTH, Texture.class);
         manager.load(SystemHud.HEALTH_STATUS, Texture.class);
         manager.load(SystemHud.COMMANDS, Texture.class);
+        manager.load(SystemHud.PATH_SELECTED, Texture.class);
     }
 
     private void update() {

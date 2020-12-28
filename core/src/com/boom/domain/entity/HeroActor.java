@@ -21,16 +21,14 @@ import static com.boom.utils.Converter.toUnits;
 public class HeroActor extends Actor
         implements ActorComponent, ActionHandler {
 
-    public static final short HERO_COLLISION =
-            ~Item.AID_MASK;
-
-    private static final float POS_X = 0.5f;
-    private static final float POS_Y = 2.5f;
-
     public Sprite sprite;
     public Body body;
 
+    private Hero hero;
+
     public HeroActor(Hero hero) {
+        this.hero = hero;
+
         sprite = createSprite(Entity.HERO_TEXTURE);
         body = createBody(sprite, hero.name);
     }
@@ -70,7 +68,7 @@ public class HeroActor extends Actor
     }
 
     public Vector2 getPosition() {
-        return new Vector2(sprite.getX(), sprite.getY());
+        return new Vector2((int) body.getPosition().x, (int) body.getPosition().y);
     }
 
     // Create component for the Hero ---------------------------------------------------------------
@@ -87,7 +85,7 @@ public class HeroActor extends Actor
     public Body createBody(Sprite sprite, String name) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(POS_X, POS_Y);
+        bodyDef.position.set(toCenterSprite(hero.position.x), toCenterSprite(hero.position.y));
         bodyDef.fixedRotation = true;
 
         Body body = GameWorld.getInstance().getWorld().createBody(bodyDef);
@@ -107,5 +105,9 @@ public class HeroActor extends Actor
         shape.dispose();
 
         return body;
+    }
+
+    private float toCenterSprite(float pos) {
+        return pos + .5f;
     }
 }
