@@ -11,6 +11,7 @@ public class Config {
     public static final float FIT = 1.0f;
 
     public static final float PPM = 64f;
+    public static final int TILE_SIZE = 64;
 
     public static final int COMMAND_SHOOT_D = 0;
     public static final int COMMAND_SHOOT_E = 1;

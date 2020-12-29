@@ -1,8 +1,10 @@
 package com.boom.domain.entity;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -19,7 +21,13 @@ import static com.boom.Config.*;
 import static com.boom.utils.Converter.toUnits;
 
 public class HeroActor extends Actor
-        implements ActorComponent, ActionHandler {
+        implements ActionHandler {
+
+    private final static float DELTA_CENTER = .5f;
+
+    private float animationTimer = 0;
+    private TextureRegion currentFrame;
+    private final Animation<TextureRegion> idle;
 
     public Sprite sprite;
     public Body body;
@@ -29,15 +37,27 @@ public class HeroActor extends Actor
     public HeroActor(Hero hero) {
         this.hero = hero;
 
-        sprite = createSprite(Entity.HERO_TEXTURE);
-        body = createBody(sprite, hero.name);
+        Texture texture = GameManager.getInstance().getManager().get(Entity.HERO_TEXTURE, Texture.class);
+        TextureRegion[] idleRegions = TextureRegion.split(texture, TILE_SIZE, TILE_SIZE)[0];
+        idle = new Animation<>(0.25f, idleRegions);
+        idle.setPlayMode(Animation.PlayMode.LOOP);
+
+        body = createBody(hero.name);
+    }
+
+    @Override
+    public void act(float delta) {
+        animationTimer += delta;
     }
 
     @Override
     public void draw(Batch batch, float alpha) {
-        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,
-                body.getPosition().y - sprite.getHeight() / 2);
-        sprite.draw(batch);
+        currentFrame = idle.getKeyFrame(animationTimer);
+
+        float posX = body.getPosition().x - DELTA_CENTER;
+        float posY = body.getPosition().y - DELTA_CENTER;
+
+        batch.draw(currentFrame, posX, posY, 1, 1);
     }
 
     @Override
@@ -67,32 +87,17 @@ public class HeroActor extends Actor
 
     }
 
-    public Vector2 getPosition() {
-        return new Vector2((int) body.getPosition().x, (int) body.getPosition().y);
-    }
-
-    // Create component for the Hero ---------------------------------------------------------------
-
-    @Override
-    public Sprite createSprite(String texture) {
-        Sprite sprite = new Sprite(GameManager.getInstance().getManager().get(
-                texture, Texture.class));
-        sprite.setSize(toUnits(sprite.getWidth()), toUnits(sprite.getHeight()));
-
-        return sprite;
-    }
-
-    public Body createBody(Sprite sprite, String name) {
+    public Body createBody(String name) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(toCenterSprite(hero.position.x), toCenterSprite(hero.position.y));
         bodyDef.fixedRotation = true;
 
         Body body = GameWorld.getInstance().getWorld().createBody(bodyDef);
-        body.setUserData(new BodyData(name, sprite.getWidth(), sprite.getHeight(), this));
+        body.setUserData(new BodyData(name, 1, 1, this));
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
+        shape.setAsBox(DELTA_CENTER, DELTA_CENTER);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -108,6 +113,6 @@ public class HeroActor extends Actor
     }
 
     private float toCenterSprite(float pos) {
-        return pos + .5f;
+        return pos + DELTA_CENTER;
     }
 }

@@ -32,7 +32,7 @@ public class AidGroup extends Group {
     }
 }
 
-class AidActor extends Actor implements ActorComponent {
+class AidActor extends Actor {
 
     public final Sprite sprite;
     public final Body body;
@@ -58,7 +58,6 @@ class AidActor extends Actor implements ActorComponent {
         return new Vector2(sprite.getX(), sprite.getY());
     }
 
-    @Override
     public Sprite createSprite(String texture) {
         Sprite sprite = new Sprite(GameManager.getInstance().getManager().get(
                 texture, Texture.class));
