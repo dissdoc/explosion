@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boom.domain.GameManager;
+import com.boom.listener.ControlManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -127,12 +128,16 @@ class TableCommand extends Table {
     }
 
     public void buildControls() {
-        final CommandButton shootBtn = new CommandButton(regions[COMMAND_SHOOT_D], regions[COMMAND_SHOOT_E]);
+        final CommandButton shootBtn = new CommandButton(
+                regions[COMMAND_SHOOT_D], regions[COMMAND_SHOOT_E],
+                () -> ControlManager.getInstance().changeShoot());
         this.add(shootBtn).padRight(8).padBottom(PPM / 4);
         buttonGroup.add(shootBtn);
 
-        final CommandButton walkBtn = new CommandButton(regions[COMMAND_WALK_D], regions[COMMAND_WALK_E]);
-        walkBtn.toggleSelect();
+        final CommandButton walkBtn = new CommandButton(
+                regions[COMMAND_WALK_D], regions[COMMAND_WALK_E],
+                () -> ControlManager.getInstance().changeRun());
+        walkBtn.toggleSelect(true);
         this.add(walkBtn).padBottom(PPM / 4);
         buttonGroup.add(walkBtn);
     }
@@ -149,11 +154,11 @@ class TableCommand extends Table {
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int count) {
             for (CommandButton btn: buttonGroup) {
                 if (btn.isSelected()) {
-                    btn.toggleSelect();
+                    btn.toggleSelect(false);
                 }
             }
 
-            button.toggleSelect();
+            button.toggleSelect(true);
 
             return true;
         }
@@ -164,17 +169,29 @@ class TableCommand extends Table {
         private boolean isSelected = false;
         private TextureRegionDrawable unselectRegion;
         private TextureRegionDrawable selectRegion;
+        private ControlButtonHandler handler;
 
-        public CommandButton(TextureRegion imageUp, TextureRegion imageDown) {
+        public CommandButton(TextureRegion imageUp, TextureRegion imageDown,
+                             ControlButtonHandler handler) {
             super((Drawable) null);
             unselectRegion = new TextureRegionDrawable(imageUp);
             selectRegion = new TextureRegionDrawable(imageDown);
+
+            this.handler = handler;
             this.getStyle().imageUp = unselectRegion;
 
             this.addListener(new CommandClickListener(this));
         }
 
-        public void toggleSelect() {
+        /**
+         * Метод переключения необходимого действия из группы кнопок действий
+         * @param isClicked было ли нажатие на данную кнопку или мы просто сбрасываем курсор
+         */
+        public void toggleSelect(boolean isClicked) {
+            if (isClicked) {
+                handler.click();
+            }
+
             swapImages();
             isSelected = !isSelected;
         }
@@ -189,5 +206,12 @@ class TableCommand extends Table {
             else
                 this.getStyle().imageUp = unselectRegion;
         }
+    }
+
+    /**
+     * Слушатель нажатия кнопки в навигации действий пользователя
+     */
+    private interface ControlButtonHandler {
+        void click();
     }
 }

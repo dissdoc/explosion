@@ -18,7 +18,6 @@ import com.boom.items.models.Hero;
 import com.boom.listener.ActionHandler;
 
 import static com.boom.Config.*;
-import static com.boom.utils.Converter.toUnits;
 
 public class HeroActor extends Actor
         implements ActionHandler {
@@ -28,6 +27,7 @@ public class HeroActor extends Actor
     private float animationTimer = 0;
     private TextureRegion currentFrame;
     private final Animation<TextureRegion> idle;
+    private final Animation<TextureRegion> walk;
 
     public Sprite sprite;
     public Body body;
@@ -38,9 +38,12 @@ public class HeroActor extends Actor
         this.hero = hero;
 
         Texture texture = GameManager.getInstance().getManager().get(Entity.HERO_TEXTURE, Texture.class);
-        TextureRegion[] idleRegions = TextureRegion.split(texture, TILE_SIZE, TILE_SIZE)[0];
-        idle = new Animation<>(0.25f, idleRegions);
+        TextureRegion[][] regions = TextureRegion.split(texture, TILE_SIZE, TILE_SIZE);
+        idle = new Animation<>(.25f, regions[0]);
         idle.setPlayMode(Animation.PlayMode.LOOP);
+
+        walk = new Animation<>(.25f, regions[2]);
+        walk.setPlayMode(Animation.PlayMode.LOOP);
 
         body = createBody(hero.name);
     }
