@@ -20,7 +20,7 @@ public class GameWorld {
     }
 
     public void show() {
-        world = new World(new Vector2(0, -9.8f), true);
+        world = new World(new Vector2(0, /*-9.8f*/ 0.0f), true);
         world.setContactListener(new GameListener());
     }
 

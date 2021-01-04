@@ -136,7 +136,7 @@ class TableCommand extends Table {
 
         final CommandButton walkBtn = new CommandButton(
                 regions[COMMAND_WALK_D], regions[COMMAND_WALK_E],
-                () -> ControlManager.getInstance().changeRun());
+                () -> ControlManager.getInstance().changeIdle());
         walkBtn.toggleSelect(true);
         this.add(walkBtn).padBottom(PPM / 4);
         buttonGroup.add(walkBtn);
@@ -167,9 +167,9 @@ class TableCommand extends Table {
     private class CommandButton extends ImageButton {
 
         private boolean isSelected = false;
-        private TextureRegionDrawable unselectRegion;
-        private TextureRegionDrawable selectRegion;
-        private ControlButtonHandler handler;
+        private final TextureRegionDrawable unselectRegion;
+        private final TextureRegionDrawable selectRegion;
+        private final ControlButtonHandler handler;
 
         public CommandButton(TextureRegion imageUp, TextureRegion imageDown,
                              ControlButtonHandler handler) {

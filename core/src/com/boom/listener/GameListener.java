@@ -19,18 +19,20 @@ public class GameListener implements ContactListener {
             Fixture attacker = contact.getFixtureA();
             Fixture defender = contact.getFixtureB();
 
-            if (isCollideHeroAndFloor(attacker, defender)) {
-                BodyData attackerData = (BodyData) attacker.getBody().getUserData();
-                BodyData defenderData = (BodyData) defender.getBody().getUserData();
+//            if (isCollideHeroAndFloor(attacker, defender)) {
+//                BodyData attackerData = (BodyData) attacker.getBody().getUserData();
+//                BodyData defenderData = (BodyData) defender.getBody().getUserData();
+//
+//                PositionCollide collide = isCollide(
+//                    attacker.getBody().getPosition(),
+//                    defender.getBody().getPosition(),
+//                    attackerData,
+//                    defenderData
+//                );
+//
+//                HeroActor actor = (HeroActor) attackerData.def;
 
-                PositionCollide collide = isCollide(
-                    attacker.getBody().getPosition(),
-                    defender.getBody().getPosition(),
-                    attackerData,
-                    defenderData
-                );
 
-                HeroActor actor = (HeroActor) attackerData.def;
                 // Если столкнулись с любой стороны, то прыжок сразу завершаем и начинаем падать
 //                if (collide != null) {
 //                    actor.isJump = false;
@@ -47,7 +49,7 @@ public class GameListener implements ContactListener {
 //                } else if (PositionCollide.RIGHT.equals(collide)) {
 //                    if (actor.isJump) actor.isClimb = false;
 //                }
-            }
+//            }
         }
     }
 
@@ -67,8 +69,9 @@ public class GameListener implements ContactListener {
     }
 
     private boolean isCollideHeroAndFloor(Fixture fixtureA, Fixture fixtureB) {
-        return Entity.HERO_NAME.equals(fixtureA.getUserData()) &&
-                Obstacle.FLOOR_NAME.equals(fixtureB.getUserData());
+//        return Entity.HERO_NAME.equals(fixtureA.getUserData()) &&
+//                Obstacle.FLOOR_NAME.equals(fixtureB.getUserData());
+        return true;
     }
 
     private PositionCollide isCollide(Vector2 vec1, Vector2 vec2, BodyData data1, BodyData data2) {

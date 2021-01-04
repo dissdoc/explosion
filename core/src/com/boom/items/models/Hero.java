@@ -11,26 +11,29 @@ public class Hero extends Mob {
         super();
         health = 100;
         name = Config.Entity.HERO_NAME;
-        this.position = pos;
-    }
-
-    public int getX() {
-        return (int) this.position.x;
-    }
-
-    public int getY() {
-        return (int) this.position.y;
-    }
-
-    public boolean isJump() {
-        return state == State.JUMP;
-    }
-
-    public void jump() {
-        state = State.JUMP;
+        position.casting(pos);
     }
 
     public float getJumpImpulse() {
         return 5f;
+    }
+
+    public void run(int x, int y) {
+        position.x = x;
+        position.y = y;
+
+        state = State.RUN;
+    }
+
+    public void idle() {
+        state = State.IDLE;
+    }
+
+    public void shoot() {
+        state = State.SHOOT;
+    }
+
+    public void climb() {
+        state = State.CLIMB;
     }
 }

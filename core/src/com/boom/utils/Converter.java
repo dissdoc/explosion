@@ -17,4 +17,8 @@ public class Converter {
     public static Vector2 position(float x, float y) {
         return new Vector2(toUnits(x), toUnits(y));
     }
+
+    public static int toCells(float pixels) {
+        return (int) toUnits(pixels);
+    }
 }

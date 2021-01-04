@@ -8,6 +8,7 @@ public class ControlManager {
     private static ControlManager instance;
 
     private List<ControlEvent> events;
+    private Control control;
 
     private ControlManager() {
         events = new LinkedList<>();
@@ -26,34 +27,40 @@ public class ControlManager {
     }
 
     public void changeShoot() {
+        control = Control.SHOOT;
         for (ControlEvent event: events)
             event.shoot();
-        System.out.println("Event shoot");
     }
 
-    public void changeRun() {
+    public void changeIdle() {
+        control = Control.IDLE;
         for (ControlEvent event: events)
-            event.run();
-        System.out.println("Event run");
+            event.idle();
+    }
+
+    public boolean canDraw() {
+        return control == Control.IDLE;
+    }
+
+    public boolean canShoot() {
+        return control == Control.SHOOT;
+    }
+
+    public void changeRun(int x, int y) {
+        for (ControlEvent event: events)
+            event.run(x, y);
     }
 
     public interface ControlEvent {
 
         void shoot();
 
-        void run();
+        void idle();
+
+        void run(int x, int y);
     }
 
-    public static class ControlListener implements ControlEvent {
-
-        @Override
-        public void shoot() {
-
-        }
-
-        @Override
-        public void run() {
-
-        }
+    public enum Control {
+        SHOOT, IDLE
     }
 }

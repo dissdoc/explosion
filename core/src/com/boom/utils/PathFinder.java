@@ -6,10 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Stack;
 
 public class PathFinder {
 
-    public static List<Cell> getPath(TileType[][] map, Cell hero, Cell cursor) {
+    public static Stack<Cell> getPath(TileType[][] map, Cell hero, Cell cursor) {
         Map<Cell, List<Cell>> graph = getGraph(map, cursor);
         Map<Cell, Cell> visited = bfs(hero, cursor, graph);
 
@@ -19,7 +20,8 @@ public class PathFinder {
     private static Map<Cell, List<Cell>> getGraph(TileType[][] map, Cell cursor) {
         Map<Cell, List<Cell>> data = new HashMap<>();
 
-        if (!checkBoard(map, cursor) || map[cursor.x][cursor.y] == TileType.Door )
+        if (!checkBoard(map, cursor) || map[cursor.x][cursor.y] == TileType.Door ||
+                map[cursor.x][cursor.y] == TileType.Floor)
             return data;
 
         for (int x = 0; x < map.length; x++) {
@@ -43,8 +45,7 @@ public class PathFinder {
 
         while (!queue.isEmpty()) {
             Cell node = queue.remove();
-            if (node.x == cursor.x && node.y == cursor.y)
-                return visited;
+
 
             List<Cell> nextNodes = graph.get(node);
             if (nextNodes == null)
@@ -56,13 +57,18 @@ public class PathFinder {
                 queue.add(next);
                 visited.put(next, node);
             }
+
+            if (node.x == cursor.x && node.y == cursor.y) {
+                cursor.direction = node.direction;
+                return visited;
+            }
         }
 
         return visited;
     }
 
-    private static List<Cell> getShortPath(Map<Cell, Cell> visited, Cell hero, Cell cursor) {
-        List<Cell> path = new LinkedList<>();
+    private static Stack<Cell> getShortPath(Map<Cell, Cell> visited, Cell hero, Cell cursor) {
+        Stack<Cell> path = new Stack<>();
 
         if (visited == null || visited.size() == 0)
             return path;
@@ -74,9 +80,9 @@ public class PathFinder {
             if (cursor == null)
                 break;
 
-            path.add(0, cursor);
+            path.add(cursor);
         }
-        path.remove(0);
+        path.pop();
 
         return path;
     }
@@ -85,20 +91,29 @@ public class PathFinder {
         List<Cell> nodes = new LinkedList<>();
 
         Cell left = new Cell(x - 1, y);
-        if (checkBoard(map, left) && checkHNode(map, new Cell(left.x, left.y + 1)))
+        if (checkBoard(map, left) && checkHNode(map, new Cell(left.x, left.y + 1))) {
+            left.direction = Direction.LEFT;
             nodes.add(left);
+        }
 
         Cell right = new Cell(x + 1, y);
-        if (checkBoard(map, right) && checkHNode(map, new Cell(right.x, right.y + 1)))
+        if (checkBoard(map, right) && checkHNode(map, new Cell(right.x, right.y + 1))) {
+            right.direction = Direction.RIGHT;
             nodes.add(right);
+        }
 
-        Cell top = new Cell(x, y + 1);
-        if (checkBoard(map, top) && (checkVNode(map, top) || checkVNode(map, new Cell(top.x, top.y + 1))))
-            nodes.add(top);
-
-        Cell bottom = new Cell(x, y - 1);
-        if (checkBoard(map, bottom) && checkVNode(map, bottom))
+        Cell bottom = new Cell(x, y + 1);
+        if (checkBoard(map, bottom) && (checkVNode(map, bottom)
+                || checkVNode(map, new Cell(bottom.x, bottom.y + 1)))) {
+            bottom.direction = Direction.BOTTOM;
             nodes.add(bottom);
+        }
+
+        Cell top = new Cell(x, y - 1);
+        if (checkBoard(map, top) && checkVNode(map, top)) {
+            top.direction = Direction.TOP;
+            nodes.add(top);
+        }
 
         return nodes;
     }
@@ -126,6 +141,7 @@ public class PathFinder {
     public static class Cell {
         public int x;
         public int y;
+        public Direction direction;
 
         public Cell(int x, int y) {
             this.x = x;
@@ -148,5 +164,9 @@ public class PathFinder {
         public int hashCode() {
             return String.format("[%s:%s]", x, y).hashCode();
         }
+    }
+
+    public enum Direction {
+        LEFT, RIGHT, TOP, BOTTOM
     }
 }

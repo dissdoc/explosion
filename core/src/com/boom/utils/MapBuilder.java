@@ -7,10 +7,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.boom.domain.GameManager;
 import com.boom.domain.entity.AidGroup;
+import com.boom.domain.entity.FloorGroup;
 import com.boom.domain.entity.HeroGroup;
 
 import static com.boom.Config.*;
@@ -21,7 +21,7 @@ public class MapBuilder {
     private TileType[][] map;
     private TiledMap tiledMap;
 
-    public HeroGroup hero;
+    private Primitive primitive;
 
     public MapBuilder() {
         tiledMap = GameManager.getInstance().getManager().get(MAP_FILE);
@@ -31,7 +31,35 @@ public class MapBuilder {
         return map;
     }
 
-    public void init() {
+    public int getWidth() {
+        return map.length;
+    }
+
+    public int getHeight() {
+        return map[0].length;
+    }
+
+    public Primitive getPrimitive() {
+        return primitive;
+    }
+
+    public void init(Stage stage) {
+        fillSpace();
+        fillFloor();
+        fillObstacles();
+
+        primitive = new Primitive(stage);
+        primitive.init();
+
+//        for (int y = 0; y < map[0].length; y++) {
+//            for (int x = 0; x < map.length; x++) {
+//                System.out.print(map[x][y].name().substring(0, 1) + " ");
+//            }
+//            System.out.println("");
+//        }
+    }
+
+    private void fillSpace() {
         TiledMapTileLayer layer =
                 (TiledMapTileLayer) tiledMap.getLayers().get(Obstacle.PLATFORM_LAYER);
 
@@ -41,9 +69,6 @@ public class MapBuilder {
                 map[x][y] = TileType.Space;
             }
         }
-
-        fillFloor();
-        fillObstacles();
     }
 
     private void fillFloor() {
@@ -67,11 +92,11 @@ public class MapBuilder {
     private void setPositionObject(RectangleMapObject rectMap, TileType type) {
         Rectangle rect = rectMap.getRectangle();
 
-        int width = (int) (rect.width / PPM);
-        int height = (int) (rect.height / PPM);
+        int width = toCells(rect.width);
+        int height = toCells(rect.height);
 
-        int posX = (int) toUnits(rect.x);
-        int posY = (int) toUnits(rect.y);
+        int posX = toCells(rect.x);
+        int posY = toCells(rect.y);
 
         for (int x = posX; x < width + posX; x++) {
             for (int y = posY; y < height + posY; y++) {
@@ -80,35 +105,60 @@ public class MapBuilder {
         }
     }
 
-    public void buildStaticFloor() {
-        BaseBody.create()
-                .type(BodyDef.BodyType.StaticBody)
-                .createObstaclesByName(tiledMap, Obstacle.FLOOR_LAYER, Obstacle.FLOOR_NAME);
-    }
+    public class Primitive {
 
-    public void buildMobs(Stage stage) {
-        MapObjects objects = tiledMap.getLayers().get(Obstacle.MOBS_LAYER).getObjects();
-        for (MapObject object: objects) {
-            String type = object.getProperties().get("type").toString();
-            if (type.equals(Entity.HERO_NAME)) {
-                Rectangle rect = ((RectangleMapObject)object).getRectangle();
-                Vector2 pos = position(rect.x, rect.y);
+        private final Stage stage;
 
-                hero = new HeroGroup(pos);
-                stage.addActor(hero);
+        private HeroGroup hero;
+
+        public Primitive(Stage stage) {
+            this.stage = stage;
+        }
+
+        public void init() {
+            buildStaticFloor();
+            buildStaticItems();
+            buildMobs();
+        }
+
+        public HeroGroup getHero() {
+            return hero;
+        }
+
+        private void buildStaticFloor() {
+            MapObjects objects = tiledMap.getLayers().get(Obstacle.FLOOR_LAYER).getObjects();
+            for (MapObject object: objects) {
+                Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+                FloorGroup group = new FloorGroup(rect);
+                group.createBody();
             }
         }
-    }
 
-    public void buildStaticItems(Stage stage) {
-        MapObjects objects = tiledMap.getLayers().get(Obstacle.ITEMS_LAYER).getObjects();
-        for (MapObject object: objects) {
-            RectangleMapObject rectMapObject = (RectangleMapObject) object;
-            Rectangle rect = rectMapObject.getRectangle();
+        private void buildMobs() {
+            MapObjects objects = tiledMap.getLayers().get(Obstacle.MOBS_LAYER).getObjects();
+            for (MapObject object: objects) {
+                String type = object.getProperties().get("type").toString();
+                if (type.equals(Entity.HERO_NAME)) {
+                    Rectangle rect = ((RectangleMapObject)object).getRectangle();
+                    Vector2 pos = position(rect.x, rect.y);
 
-            AidGroup aid = new AidGroup();
-            aid.setObjectPosition(rect.x, rect.y);
-            stage.addActor(aid);
+                    hero = new HeroGroup(pos);
+                    stage.addActor(hero);
+                }
+            }
+        }
+
+        private void buildStaticItems() {
+            MapObjects objects = tiledMap.getLayers().get(Obstacle.ITEMS_LAYER).getObjects();
+            for (MapObject object: objects) {
+                RectangleMapObject rectMapObject = (RectangleMapObject) object;
+                Rectangle rect = rectMapObject.getRectangle();
+
+                AidGroup aid = new AidGroup();
+                aid.setObjectPosition(rect.x, rect.y);
+                stage.addActor(aid);
+            }
         }
     }
 }

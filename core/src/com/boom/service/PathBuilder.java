@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.boom.Config;
 import com.boom.domain.GameManager;
+import com.boom.listener.ControlManager;
 import com.boom.utils.MapBuilder;
 import com.boom.utils.PathFinder;
 
-import java.util.List;
+import java.util.Stack;
 
 public class PathBuilder {
 
@@ -15,26 +16,47 @@ public class PathBuilder {
     private SpriteBatch batch;
     private Texture texture;
 
-    private int MAP_HEIGHT = 0;
+    private Stack<PathFinder.Cell> path;
+    private boolean isFollowPath = false;
 
     public PathBuilder(MapBuilder mapBuilder, SpriteBatch batch) {
         this.mapBuilder = mapBuilder;
         this.batch = batch;
         this.texture = GameManager.getInstance().getManager().get(Config.SystemHud.PATH_SELECTED);
 
-        MAP_HEIGHT = mapBuilder.getMap()[0].length;
+        path = new Stack<>();
     }
 
     public void drawHeroPath(float x, float y) {
+        if (!ControlManager.getInstance().canDraw() || isFollowPath) {
+            if (path.size() > 0) path = new Stack<>();
+            return;
+        }
+
         PathFinder.Cell hero = new PathFinder.Cell(
-                mapBuilder.hero.mediator.hero.getX(),
-                MAP_HEIGHT - mapBuilder.hero.mediator.hero.getY());
-        PathFinder.Cell cursor = new PathFinder.Cell((int) x, MAP_HEIGHT - (int) y);
+                mapBuilder.getPrimitive().getHero().getPosX(),
+                mapBuilder.getHeight() - mapBuilder.getPrimitive().getHero().getPosY());
+        PathFinder.Cell cursor = new PathFinder.Cell((int) x, mapBuilder.getHeight() - (int) y);
 
-        List<PathFinder.Cell> path = PathFinder.getPath(mapBuilder.getMap(), hero, cursor);
+        path = PathFinder.getPath(mapBuilder.getMap(), hero, cursor);
 
-        for (PathFinder.Cell cell :path) {
+        for (PathFinder.Cell cell: path) {
             batch.draw(texture, cell.x, mapBuilder.getMap()[0].length - cell.y, 1, 1);
+        }
+    }
+
+    public void followPath()  {
+        if (path.size() > 0 && ControlManager.getInstance().canDraw()) {
+            isFollowPath = true;
+
+            RouteManager.getInstance().setPath(path, mapBuilder.getHeight());
+            ControlManager.getInstance().changeRun(0, 0);
+        }
+    }
+
+    public void checkerPath() {
+        if (RouteManager.getInstance().isEmpty()) {
+            isFollowPath = false;
         }
     }
 }

@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boom.domain.GameManager;
 import com.boom.domain.GameWorld;
+import com.boom.listener.CursorManager;
 import com.boom.scene.HudStatus;
 import com.boom.service.PathBuilder;
 import com.boom.utils.MapBuilder;
@@ -40,6 +41,7 @@ public class GameScreen extends ScreenAdapter {
     private PathBuilder pathBuilder;
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
+    private CursorManager cursorManager;
 
     private Box2DDebugRenderer debugRender;
 
@@ -53,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        renderCursor();
+        cursorManager = new CursorManager();
         GameWorld.getInstance().show();
         debugRender = new Box2DDebugRenderer();
 
@@ -63,9 +65,10 @@ public class GameScreen extends ScreenAdapter {
         viewport.apply(true);
 
         batch = new SpriteBatch();
+        stage = new Stage(viewport);
 
         mapBuilder = new MapBuilder();
-        mapBuilder.init();
+        mapBuilder.init(stage);
         pathBuilder = new PathBuilder(mapBuilder, batch);
 
         // Create menu game
@@ -77,16 +80,11 @@ public class GameScreen extends ScreenAdapter {
         MAP_HEIGHT = layer.getHeight();
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1/PPM, batch);
         mapRenderer.setView(camera);
-
-        stage = new Stage(viewport);
-
-        mapBuilder.buildStaticFloor();
-        mapBuilder.buildStaticItems(stage);
-        mapBuilder.buildMobs(stage);
     }
 
     @Override
     public void render(float delta) {
+        cursorManager.render();
         update(delta);
         clearScreen();
         draw(delta);
@@ -111,10 +109,15 @@ public class GameScreen extends ScreenAdapter {
 
         batch.begin();
 
-//        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            Vector3 vec = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            pathBuilder.drawHeroPath(vec.x, vec.y);
-//        }
+        Vector3 vec = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        pathBuilder.drawHeroPath(vec.x, vec.y);
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            pathBuilder.followPath();
+        }
+
+        pathBuilder.checkerPath();
+
         batch.end();
         batch.setProjectionMatrix(hudStatus.stage.getCamera().combined);
         hudStatus.stage.draw();
@@ -157,13 +160,14 @@ public class GameScreen extends ScreenAdapter {
         Gdx.graphics.setTitle(String.format("%s v.%s", TITLE, VERSION));
     }
 
-    private void renderCursor() {
-        Pixmap pix = new Pixmap(Gdx.files.internal(SystemHud.CURSOR));
-        int xHotspot = pix.getWidth()/2;
-        int yHotspot = pix.getHeight()/2;
-        Cursor cursor =  Gdx.graphics.newCursor(pix, xHotspot, yHotspot);
-        Gdx.graphics.setCursor(cursor);
-
-        pix.dispose();
-    }
+//    private void renderCursor() {
+//        Pixmap pix = new Pixmap(Gdx.files.internal(SystemHud.CURSOR));
+//
+//        int xHotspot = pix.getWidth()/2/2;
+//        int yHotspot = pix.getHeight()/2;
+//        Cursor cursor =  Gdx.graphics.newCursor(pix, xHotspot, yHotspot);
+//        Gdx.graphics.setCursor(cursor);
+//
+//        pix.dispose();
+//    }
 }
