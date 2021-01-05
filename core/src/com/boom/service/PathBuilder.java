@@ -55,6 +55,12 @@ public class PathBuilder {
     }
 
     public void checkerPath() {
+        if (ControlManager.getInstance().canShoot()
+                && ControlManager.getInstance().canSwitchControl()
+                && !RouteManager.getInstance().isEmpty()) {
+            RouteManager.getInstance().dispose();
+        }
+
         if (RouteManager.getInstance().isEmpty()) {
             isFollowPath = false;
         }

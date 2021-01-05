@@ -152,6 +152,9 @@ class TableCommand extends Table {
 
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int count) {
+            if (!ControlManager.getInstance().canSwitchControl())
+                return false;
+
             for (CommandButton btn: buttonGroup) {
                 if (btn.isSelected()) {
                     btn.toggleSelect(false);

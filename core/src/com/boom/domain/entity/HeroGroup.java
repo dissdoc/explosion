@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.boom.items.models.Hero;
 import com.boom.listener.ControlManager;
 
-public class HeroGroup extends Group implements ControlManager.ControlEvent {
+public class HeroGroup extends Group {
 
     private Hero hero;
     private HeroActor heroActor;
@@ -19,7 +19,8 @@ public class HeroGroup extends Group implements ControlManager.ControlEvent {
 
         this.addActor(heroActor);
 
-        ControlManager.getInstance().addListener(this);
+        ControlManager.getInstance().addListenerControls(hero);
+        ControlManager.getInstance().addListenerDirections(hero);
     }
 
     public int getPosX() {
@@ -46,20 +47,5 @@ public class HeroGroup extends Group implements ControlManager.ControlEvent {
 
     public void dispose() {
 
-    }
-
-    @Override
-    public void shoot() {
-        hero.shoot();
-    }
-
-    @Override
-    public void idle() {
-        hero.idle();
-    }
-
-    @Override
-    public void run(int x, int y) {
-        hero.run(x, y);
     }
 }

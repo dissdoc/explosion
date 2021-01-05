@@ -11,7 +11,7 @@ public class Mob {
     public Defence head = Defence.NONE;
     public Defence body = Defence.NONE;
     public Defence legs = Defence.NONE;
-    public State state = State.IDLE;
+    public State state = State.IDLE_RIGHT;
 
     public static class Position {
         public int x = 0;

@@ -159,15 +159,4 @@ public class GameScreen extends ScreenAdapter {
 
         Gdx.graphics.setTitle(String.format("%s v.%s", TITLE, VERSION));
     }
-
-//    private void renderCursor() {
-//        Pixmap pix = new Pixmap(Gdx.files.internal(SystemHud.CURSOR));
-//
-//        int xHotspot = pix.getWidth()/2/2;
-//        int yHotspot = pix.getHeight()/2;
-//        Cursor cursor =  Gdx.graphics.newCursor(pix, xHotspot, yHotspot);
-//        Gdx.graphics.setCursor(cursor);
-//
-//        pix.dispose();
-//    }
 }

@@ -27,6 +27,10 @@ public class RouteManager {
         DELTA_HEIGHT = delta;
     }
 
+    public void dispose() {
+        this.path = new Stack<>();
+    }
+
     public boolean isEmpty() {
         return path == null || path.isEmpty();
     }
@@ -34,6 +38,7 @@ public class RouteManager {
     public Vector2 nextPosition(int x, int y) {
         if (path.isEmpty()) {
             ControlManager.getInstance().changeIdle();
+            ControlManager.getInstance().lockControl(false);
             return null;
         }
 
@@ -42,9 +47,11 @@ public class RouteManager {
 
         if (route.x != 0.0f || route.y != 0.0f) {
             path.add(cell);
-        } else {
-            ControlManager.getInstance().changeRun(cell.x, DELTA_HEIGHT - cell.y);
         }
+
+        ControlManager.getInstance().lockControl(true);
+        ControlManager.getInstance().changeRun(cell.x, DELTA_HEIGHT - cell.y);
+        ControlManager.getInstance().changeDirection(cell.direction);
 
         return route;
     }
