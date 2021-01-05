@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.boom.Config;
 import com.boom.domain.GameManager;
 import com.boom.domain.GameWorld;
 import com.boom.items.models.Hero;
@@ -122,6 +124,11 @@ public class HeroActor extends Actor {
 
         Fixture fixture = body.createFixture(fixtureDef);
         fixture.setUserData(name);
+
+        Filter filter = new Filter();
+        filter.categoryBits = Config.Filter.HERO_FILTER;
+        filter.maskBits = Config.Filter.HERO_MASK;
+        fixture.setFilterData(filter);
 
         shape.dispose();
 

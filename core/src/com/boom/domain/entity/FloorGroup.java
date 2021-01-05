@@ -3,8 +3,10 @@ package com.boom.domain.entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.boom.Config;
 import com.boom.domain.GameWorld;
 
 import static com.boom.utils.Converter.*;
@@ -33,6 +35,12 @@ public class FloorGroup {
 
         Fixture fixture = body.createFixture(shape, 1);
         fixture.setUserData(data);
+
+        Filter filter = new Filter();
+        filter.categoryBits = Config.Filter.FLOOR_FILTER;
+        filter.maskBits = Config.Filter.FLOOR_MASK;
+        fixture.setFilterData(filter);
+
         body.setTransform(toUnits(rect.x) + width / 2,
                 toUnits(rect.y) + height / 2, 0);
     }

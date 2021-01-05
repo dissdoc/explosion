@@ -21,6 +21,14 @@ public class Config {
     // Map
     public static final String MAP_FILE = "map.tmx";
 
+    public static final class Filter {
+        public static final short HERO_FILTER = 0x0001;
+        public static final short FLOOR_FILTER = 0x0002;
+
+        public static final short HERO_MASK = ~FLOOR_FILTER;
+        public static final short FLOOR_MASK = ~HERO_FILTER;
+    }
+
     public static final class SystemHud {
 
         public static final String BOOT = "boot.png";
@@ -36,7 +44,7 @@ public class Config {
 
         public static final String HERO_TEXTURE = "hero.png";
         public static final String HERO_NAME = "Hero";
-        public static final short HERO_MASK = 0x0001;
+
     }
 
     public static final class Item {
