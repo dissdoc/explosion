@@ -3,7 +3,7 @@ package com.boom;
 public class Config {
 
     public static final String TITLE = "Explosion";
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "0.1.2";
 
     public static final float WORLD_WIDTH = 1280f;
     public static final float WORLD_HEIGHT = 720f;
@@ -35,23 +35,23 @@ public class Config {
         public static final String HEALTH = "health.png";
         public static final String HEALTH_STATUS = "health_status.png";
         public static final String COMMANDS = "commands.png";
-        public static final String CURSOR_RUN =  "cursor_run.png";
-        public static final String CURSOR_SHOOT =  "cursor_shoot.png";
+        public static final String CURSOR_RUN = "cursor_run.png";
+        public static final String CURSOR_SHOOT = "cursor_shoot.png";
+        public static final String CURSOR_TAKE = "cursor_take.png";
         public static final String PATH_SELECTED = "path_selected.png";
+        public static final String INFOBOX = "infobox.png";
     }
 
     public static final class Entity {
 
         public static final String HERO_TEXTURE = "hero.png";
         public static final String HERO_NAME = "Hero";
-
     }
 
     public static final class Item {
 
         public static final String AID_TEXTURE = "aid.png";
-        public static final String AID_NAME = "aid";
-        public static final short AID_MASK = 0x0002;
+        public static final String AID_NAME = "Aidkit";
     }
 
     public static final class Obstacle {

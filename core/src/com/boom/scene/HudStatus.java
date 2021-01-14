@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boom.domain.GameManager;
+import com.boom.domain.GameWorld;
 import com.boom.listener.ControlManager;
 
 import java.util.LinkedList;
@@ -34,11 +35,13 @@ public class HudStatus implements Disposable {
 
     public Stage stage;
     private Viewport viewport;
+    private SpriteBatch batch;
 
     private Label scoreLabel2;
     private Label worldTimer;
 
-    public HudStatus(SpriteBatch batch) {
+    public HudStatus() {
+        batch = GameWorld.getInstance().getBatch();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
 
@@ -74,10 +77,12 @@ public class HudStatus implements Disposable {
 
         stage.addActor(topMenu);
         stage.addActor(commands);
-
-        Gdx.input.setInputProcessor(stage);
-
         // topMenu.debug();
+    }
+
+    public void draw() {
+        batch.setProjectionMatrix(stage.getCamera().combined);
+        stage.draw();
     }
 
     @Override

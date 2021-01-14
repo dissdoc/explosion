@@ -8,12 +8,23 @@ import static com.boom.Config.*;
 
 public class CursorManager {
 
-    private static int CENTER = 16;
+    private static CursorManager instance;
+
+    private static final int CENTER = 16;
 
     private Cursor run;
     private Cursor shoot;
+    private Cursor take;
 
-    public CursorManager() {
+    public static CursorManager getInstance() {
+        if (instance == null) {
+            instance = new CursorManager();
+        }
+
+        return instance;
+    }
+
+    public void init() {
         Pixmap pixRun = new Pixmap(Gdx.files.internal(SystemHud.CURSOR_RUN));
         run = Gdx.graphics.newCursor(pixRun, CENTER, CENTER);
         pixRun.dispose();
@@ -21,6 +32,10 @@ public class CursorManager {
         Pixmap pixShoot = new Pixmap(Gdx.files.internal(SystemHud.CURSOR_SHOOT));
         shoot = Gdx.graphics.newCursor(pixShoot, CENTER, CENTER);
         pixShoot.dispose();
+
+        Pixmap pixTake = new Pixmap(Gdx.files.internal(SystemHud.CURSOR_TAKE));
+        take = Gdx.graphics.newCursor(pixTake, CENTER, CENTER);
+        pixTake.dispose();
     }
 
     public void render() {

@@ -1,17 +1,20 @@
 package com.boom.utils;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.boom.domain.GameManager;
-import com.boom.domain.entity.AidGroup;
+import com.boom.domain.GameWorld;
 import com.boom.domain.entity.FloorGroup;
 import com.boom.domain.entity.HeroGroup;
+import com.boom.domain.entity.item.Aidkit;
 
 import static com.boom.Config.*;
 import static com.boom.utils.Converter.*;
@@ -20,11 +23,14 @@ public class MapBuilder {
 
     private TileType[][] map;
     private TiledMap tiledMap;
+    private OrthogonalTiledMapRenderer mapRenderer;
 
     private Primitive primitive;
 
     public MapBuilder() {
         tiledMap = GameManager.getInstance().getManager().get(MAP_FILE);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1/PPM, new SpriteBatch());
+        mapRenderer.setView(GameWorld.getInstance().getCamera());
     }
 
     public TileType[][] getMap() {
@@ -57,6 +63,14 @@ public class MapBuilder {
 //            }
 //            System.out.println("");
 //        }
+    }
+
+    public void render() {
+        mapRenderer.render();
+    }
+
+    public void update() {
+        mapRenderer.setView(GameWorld.getInstance().getCamera());
     }
 
     private void fillSpace() {
@@ -119,6 +133,7 @@ public class MapBuilder {
             buildStaticFloor();
             buildStaticItems();
             buildMobs();
+            buildWindow();
         }
 
         public HeroGroup getHero() {
@@ -152,13 +167,21 @@ public class MapBuilder {
         private void buildStaticItems() {
             MapObjects objects = tiledMap.getLayers().get(Obstacle.ITEMS_LAYER).getObjects();
             for (MapObject object: objects) {
+                String type = object.getProperties().get("type").toString();
                 RectangleMapObject rectMapObject = (RectangleMapObject) object;
                 Rectangle rect = rectMapObject.getRectangle();
 
-                AidGroup aid = new AidGroup();
-                aid.setObjectPosition(rect.x, rect.y);
-                stage.addActor(aid);
+                if (type.equals(Item.AID_NAME)) {
+                    Aidkit aidkit = new Aidkit(rect.x, rect.y);
+                    stage.addActor(aidkit);
+                }
             }
+        }
+
+        private void buildWindow() {
+//            InfoTooltip tooltip = new InfoTooltip(428, 364);
+//            tooltip.show();
+//            stage.addActor(tooltip);
         }
     }
 }
